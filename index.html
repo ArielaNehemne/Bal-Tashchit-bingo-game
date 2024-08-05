@@ -1,0 +1,133 @@
+<!DOCTYPE html>
+<html lang="he" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>בינגו בל תשחית</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            background-color: #e6f3e6;
+        }
+        #bingo-card {
+            display: grid;
+            grid-template-columns: repeat(5, 1fr);
+            gap: 5px;
+            margin-bottom: 20px;
+        }
+        .cell {
+            width: 100px;
+            height: 100px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            background-color: white;
+            border: 1px solid #2e8b57;
+            font-size: 14px;
+            cursor: pointer;
+            text-align: center;
+            padding: 5px;
+        }
+        .cell.marked {
+            background-color: #90ee90;
+        }
+        #draw-concept {
+            font-size: 18px;
+            margin-bottom: 20px;
+            max-width: 300px;
+            text-align: center;
+        }
+        button {
+            font-size: 18px;
+            padding: 10px 20px;
+            cursor: pointer;
+            background-color: #4caf50;
+            color: white;
+            border: none;
+            border-radius: 5px;
+        }
+    </style>
+</head>
+<body>
+    <h1>בינגו בל תשחית</h1>
+    <div id="bingo-card"></div>
+    <div id="draw-concept">לחץ על "הצג רעיון" להתחלת המשחק</div>
+    <button onclick="drawConcept()">הצג רעיון</button>
+
+    <script>
+        const bingoCard = document.getElementById('bingo-card');
+        const drawConceptDisplay = document.getElementById('draw-concept');
+        const balTashchitConcepts = [
+            "מחזור נייר", "חיסכון במים", "שימוש בשקיות רב פעמיות",
+            "כיבוי אורות", "קומפוסט ביתי", "שימוש בתחבורה ציבורית",
+            "קניית מוצרים יד שנייה", "תיקון במקום קנייה חדשה", "שימוש בכלים רב פעמיים",
+            "חיסכון בחשמל", "גידול ירקות בבית", "הפחתת צריכת בשר",
+            "שימוש בבקבוק מים רב פעמי", "הדפסה דו צדדית", "קנייה מקומית",
+            "שימוש בסבון מוצק", "הפרדת פסולת", "שימוש בסוללות נטענות",
+            "הליכה או רכיבה על אופניים", "שימוש בשאריות מזון", "תרומת בגדים ישנים",
+            "שימוש במוצרי ניקוי טבעיים", "חיסכון בנייר טואלט", "שימוש בשמש לייבוש כביסה",
+            "הפחתת שימוש בפלסטיק חד פעמי"
+        ];
+        let availableConcepts = [...balTashchitConcepts];
+
+        function generateBingoCard() {
+            for (let i = 0; i < 25; i++) {
+                const cell = document.createElement('div');
+                cell.className = 'cell';
+                if (i === 12) {
+                    cell.textContent = 'חינם';
+                    cell.classList.add('marked');
+                } else {
+                    const randomIndex = Math.floor(Math.random() * availableConcepts.length);
+                    cell.textContent = availableConcepts[randomIndex];
+                    availableConcepts.splice(randomIndex, 1);
+                }
+                cell.addEventListener('click', () => cell.classList.toggle('marked'));
+                bingoCard.appendChild(cell);
+            }
+        }
+
+        function drawConcept() {
+            if (balTashchitConcepts.length === 0) {
+                drawConceptDisplay.textContent = 'כל הרעיונות הוצגו!';
+                return;
+            }
+            const randomIndex = Math.floor(Math.random() * balTashchitConcepts.length);
+            const drawnConcept = balTashchitConcepts[randomIndex];
+            balTashchitConcepts.splice(randomIndex, 1);
+            drawConceptDisplay.textContent = `רעיון: ${drawnConcept}`;
+            checkForMatch(drawnConcept);
+        }
+
+        function checkForMatch(concept) {
+            const cells = document.querySelectorAll('.cell');
+            cells.forEach(cell => {
+                if (cell.textContent === concept) {
+                    cell.classList.add('marked');
+                }
+            });
+            checkForBingo();
+        }
+
+        function checkForBingo() {
+            const cells = Array.from(document.querySelectorAll('.cell'));
+            const rows = [0, 1, 2, 3, 4].map(i => cells.slice(i*5, (i+1)*5));
+            const cols = [0, 1, 2, 3, 4].map(i => cells.filter((_, index) => index % 5 === i));
+            const diags = [
+                [cells[0], cells[6], cells[12], cells[18], cells[24]],
+                [cells[4], cells[8], cells[12], cells[16], cells[20]]
+            ];
+            const lines = [...rows, ...cols, ...diags];
+            
+            if (lines.some(line => line.every(cell => cell.classList.contains('marked')))) {
+                alert('בינגו! ניצחת!');
+            }
+        }
+
+        generateBingoCard();
+    </script>
+</body>
+</html>
