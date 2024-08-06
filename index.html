@@ -1,9 +1,9 @@
 <!DOCTYPE html>
-<html lang="he" dir="rtl">
+<html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>בינגו בל תשחית - תלת מימד</title>
+    <title>Bal Tashchit Bingo - 3D</title>
     <style>
         body {
             font-family: Arial, sans-serif;
@@ -89,24 +89,24 @@
     </style>
 </head>
 <body>
-    <h1>בינגו בל תשחית - תלת מימד</h1>
+    <h1>Bal Tashchit Bingo - 3D</h1>
     <div id="bingo-card"></div>
-    <div id="draw-concept">לחץ על "הצג רעיון" להתחלת המשחק</div>
-    <button onclick="drawConcept()">הצג רעיון</button>
+    <div id="draw-concept">Click "Draw Concept" to start the game</div>
+    <button onclick="drawConcept()">Draw Concept</button>
 
     <script>
         const bingoCard = document.getElementById('bingo-card');
         const drawConceptDisplay = document.getElementById('draw-concept');
         const balTashchitConcepts = [
-            "מחזור נייר", "חיסכון במים", "שימוש בשקיות רב פעמיות",
-            "כיבוי אורות", "קומפוסט ביתי", "שימוש בתחבורה ציבורית",
-            "קניית מוצרים יד שנייה", "תיקון במקום קנייה חדשה", "שימוש בכלים רב פעמיים",
-            "חיסכון בחשמל", "גידול ירקות בבית", "הפחתת צריכת בשר",
-            "שימוש בבקבוק מים רב פעמי", "הדפסה דו צדדית", "קנייה מקומית",
-            "שימוש בסבון מוצק", "הפרדת פסולת", "שימוש בסוללות נטענות",
-            "הליכה או רכיבה על אופניים", "שימוש בשאריות מזון", "תרומת בגדים ישנים",
-            "שימוש במוצרי ניקוי טבעיים", "חיסכון בנייר טואלט", "שימוש בשמש לייבוש כביסה",
-            "הפחתת שימוש בפלסטיק חד פעמי"
+            "Recycle paper", "Save water", "Use reusable bags",
+            "Turn off lights", "Home composting", "Use public transportation",
+            "Buy second-hand", "Repair instead of buy new", "Use reusable utensils",
+            "Save electricity", "Grow vegetables at home", "Reduce meat consumption",
+            "Use reusable water bottle", "Double-sided printing", "Buy local",
+            "Use solid soap", "Waste separation", "Use rechargeable batteries",
+            "Walk or cycle", "Use food leftovers", "Donate old clothes",
+            "Use natural cleaning products", "Save toilet paper", "Sun-dry laundry",
+            "Reduce single-use plastics"
         ];
         let availableConcepts = [...balTashchitConcepts];
 
@@ -115,7 +115,7 @@
                 const cell = document.createElement('div');
                 cell.className = 'cell';
                 if (i === 12) {
-                    cell.textContent = 'חינם';
+                    cell.textContent = 'FREE';
                     cell.classList.add('marked');
                 } else {
                     const randomIndex = Math.floor(Math.random() * availableConcepts.length);
@@ -129,13 +129,13 @@
 
         function drawConcept() {
             if (balTashchitConcepts.length === 0) {
-                drawConceptDisplay.textContent = 'כל הרעיונות הוצגו!';
+                drawConceptDisplay.textContent = 'All concepts have been drawn!';
                 return;
             }
             const randomIndex = Math.floor(Math.random() * balTashchitConcepts.length);
             const drawnConcept = balTashchitConcepts[randomIndex];
             balTashchitConcepts.splice(randomIndex, 1);
-            drawConceptDisplay.textContent = `רעיון: ${drawnConcept}`;
+            drawConceptDisplay.textContent = `Concept: ${drawnConcept}`;
             checkForMatch(drawnConcept);
         }
 
@@ -160,7 +160,7 @@
             const lines = [...rows, ...cols, ...diags];
             
             if (lines.some(line => line.every(cell => cell.classList.contains('marked')))) {
-                alert('בינגו! ניצחת!');
+                alert('BINGO! You won!');
             }
         }
 
