@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>בינגו בל תשחית - אריאלה</title>
+    <title>בינגו בל תשחית - תלת מימד</title>
     <style>
         body {
             font-family: Arial, sans-serif;
@@ -11,12 +11,18 @@
             flex-direction: column;
             align-items: center;
             background-color: #e6f3e6;
+            perspective: 1000px;
         }
         #bingo-card {
             display: grid;
             grid-template-columns: repeat(5, 1fr);
-            gap: 5px;
+            gap: 10px;
             margin-bottom: 20px;
+            transform: rotateX(20deg);
+            transition: transform 0.3s;
+        }
+        #bingo-card:hover {
+            transform: rotateX(0deg);
         }
         .cell {
             width: 100px;
@@ -24,15 +30,27 @@
             display: flex;
             justify-content: center;
             align-items: center;
-            background-color: white;
-            border: 1px solid #2e8b57;
+            background-color: #4caf50;
+            border: 2px solid #2e8b57;
             font-size: 14px;
             cursor: pointer;
             text-align: center;
             padding: 5px;
+            color: white;
+            box-shadow: 0 4px 8px rgba(0,0,0,0.2);
+            transition: all 0.3s;
+            transform-style: preserve-3d;
+            transform: translateZ(20px);
+        }
+        .cell:hover {
+            transform: translateZ(30px);
+            box-shadow: 0 8px 16px rgba(0,0,0,0.3);
         }
         .cell.marked {
             background-color: #90ee90;
+            color: #333;
+            transform: translateZ(40px);
+            box-shadow: 0 12px 24px rgba(0,0,0,0.4);
         }
         #draw-concept {
             font-size: 18px;
@@ -48,11 +66,18 @@
             color: white;
             border: none;
             border-radius: 5px;
+            box-shadow: 0 4px 8px rgba(0,0,0,0.2);
+            transition: all 0.3s;
+        }
+        button:hover {
+            background-color: #45a049;
+            box-shadow: 0 6px 12px rgba(0,0,0,0.3);
+            transform: translateY(-2px);
         }
     </style>
 </head>
 <body>
-    <h1>בינגו בל תשחית - אריאלה</h1>
+    <h1>בינגו בל תשחית - תלת מימד</h1>
     <div id="bingo-card"></div>
     <div id="draw-concept">לחץ על "הצג רעיון" להתחלת המשחק</div>
     <button onclick="drawConcept()">הצג רעיון</button>
