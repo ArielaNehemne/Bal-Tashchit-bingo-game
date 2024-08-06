@@ -135,6 +135,7 @@
                 bingoCard.className = 'bingo-card';
                 bingoCard.id = `bingo-card-${player}`;
 
+                const shuffledConcepts = [...balTashchitConcepts].sort(() => Math.random() - 0.5);
                 for (let i = 0; i < 25; i++) {
                     const cell = document.createElement('div');
                     cell.className = 'cell';
@@ -142,10 +143,9 @@
                         cell.textContent = 'FREE';
                         cell.classList.add('marked');
                     } else {
-                        const randomIndex = Math.floor(Math.random() * availableConcepts.length);
-                        cell.textContent = availableConcepts[randomIndex];
-                        availableConcepts.splice(randomIndex, 1);
+                        cell.textContent = shuffledConcepts[i];
                     }
+                    cell.addEventListener('click', () => toggleMark(cell));
                     bingoCard.appendChild(cell);
                 }
                 playerCard.appendChild(bingoCard);
@@ -154,32 +154,22 @@
             updateCurrentPlayerDisplay();
         }
 
+        function toggleMark(cell) {
+            cell.classList.toggle('marked');
+            checkForBingo(cell.closest('.bingo-card').id);
+        }
+
         function drawConcept() {
-            if (balTashchitConcepts.length === 0) {
+            if (availableConcepts.length === 0) {
                 drawConceptDisplay.textContent = 'All concepts have been drawn!';
                 return;
             }
-            const randomIndex = Math.floor(Math.random() * balTashchitConcepts.length);
-            const drawnConcept = balTashchitConcepts[randomIndex];
-            balTashchitConcepts.splice(randomIndex, 1);
+            const randomIndex = Math.floor(Math.random() * availableConcepts.length);
+            const drawnConcept = availableConcepts[randomIndex];
+            availableConcepts.splice(randomIndex, 1);
             drawConceptDisplay.textContent = `Concept: ${drawnConcept}`;
-            checkForMatch(drawnConcept);
             currentPlayer = (currentPlayer % 5) + 1;
             updateCurrentPlayerDisplay();
-        }
-
-        function checkForMatch(concept) {
-            for (let player = 1; player <= 5; player++) {
-                const cells = document.querySelectorAll(`#bingo-card-${player} .cell`);
-                cells.forEach(cell => {
-                    if (cell.textContent === concept) {
-                        cell.classList.add('marked');
-                    }
-                });
-                if (checkForBingo(`bingo-card-${player}`)) {
-                    alert(`Player ${player} has won!`);
-                }
-            }
         }
 
         function checkForBingo(cardId) {
@@ -192,7 +182,10 @@
             ];
             const lines = [...rows, ...cols, ...diags];
             
-            return lines.some(line => line.every(cell => cell.classList.contains('marked')));
+            if (lines.some(line => line.every(cell => cell.classList.contains('marked')))) {
+                const playerNumber = cardId.split('-')[2];
+                alert(`Player ${playerNumber} has won!`);
+            }
         }
 
         function updateCurrentPlayerDisplay() {
