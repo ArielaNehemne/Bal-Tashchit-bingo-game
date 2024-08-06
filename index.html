@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Bal Tashchit Bingo - 5 Player Competition</title>
+    <title>Bal Tashchit Bingo - 3D</title>
     <style>
         body {
             font-family: Arial, sans-serif;
@@ -12,54 +12,43 @@
             align-items: center;
             background-color: #e6f3e6;
         }
-        .game-container {
-            display: flex;
-            flex-wrap: wrap;
-            justify-content: center;
-            gap: 20px;
-        }
-        .player-container {
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-        }
-        .bingo-card {
+        #bingo-card {
             display: grid;
             grid-template-columns: repeat(5, 1fr);
-            gap: 5px;
-            margin-bottom: 10px;
-            padding: 10px;
+            gap: 15px;
+            margin-bottom: 20px;
+            padding: 15px;
             background-color: #2e8b57;
             border-radius: 10px;
-            box-shadow: 0 5px 10px rgba(0,0,0,0.3);
+            box-shadow: 0 10px 20px rgba(0,0,0,0.3);
         }
         .cell {
-            width: 60px;
-            height: 60px;
+            width: 100px;
+            height: 100px;
             display: flex;
             justify-content: center;
             align-items: center;
             background-color: #4caf50;
-            border: 1px solid #2e8b57;
-            font-size: 10px;
+            border: 2px solid #2e8b57;
+            font-size: 14px;
             cursor: pointer;
             text-align: center;
-            padding: 2px;
+            padding: 5px;
             color: white;
-            box-shadow: 0 2px 4px rgba(0,0,0,0.2);
+            box-shadow: 0 4px 8px rgba(0,0,0,0.2);
             transition: all 0.3s;
             transform-style: preserve-3d;
-            transform: perspective(500px) rotateX(5deg) rotateY(2deg) translateZ(0);
+            transform: perspective(1000px) rotateX(10deg) rotateY(5deg) translateZ(0);
         }
         .cell:hover {
-            transform: perspective(500px) rotateX(0deg) rotateY(0deg) translateZ(10px);
-            box-shadow: 0 4px 8px rgba(0,0,0,0.3);
+            transform: perspective(1000px) rotateX(0deg) rotateY(0deg) translateZ(20px);
+            box-shadow: 0 8px 16px rgba(0,0,0,0.3);
         }
         .cell.marked {
             background-color: #90ee90;
             color: #333;
-            transform: perspective(500px) rotateX(-2deg) rotateY(-2deg) translateZ(20px);
-            box-shadow: 0 6px 12px rgba(0,0,0,0.4);
+            transform: perspective(1000px) rotateX(-5deg) rotateY(-5deg) translateZ(40px);
+            box-shadow: 0 12px 24px rgba(0,0,0,0.4);
         }
         .cell::before {
             content: '';
@@ -77,7 +66,7 @@
         }
         #draw-concept {
             font-size: 18px;
-            margin: 20px 0;
+            margin-bottom: 20px;
             max-width: 300px;
             text-align: center;
         }
@@ -97,27 +86,16 @@
             box-shadow: 0 6px 12px rgba(0,0,0,0.3);
             transform: translateY(-2px);
         }
-        .player-name {
-            font-weight: bold;
-            margin-bottom: 5px;
-        }
-        .player-score {
-            margin-bottom: 10px;
-        }
-        .current-player {
-            color: #2e8b57;
-            font-weight: bold;
-        }
     </style>
 </head>
 <body>
-    <h1>Bal Tashchit Bingo - 5 Player Competition</h1>
-    <div class="game-container" id="game-container"></div>
+    <h1>Bal Tashchit Bingo - 3D</h1>
+    <div id="bingo-card"></div>
     <div id="draw-concept">Click "Draw Concept" to start the game</div>
     <button onclick="drawConcept()">Draw Concept</button>
 
     <script>
-        const gameContainer = document.getElementById('game-container');
+        const bingoCard = document.getElementById('bingo-card');
         const drawConceptDisplay = document.getElementById('draw-concept');
         const balTashchitConcepts = [
             "Recycle paper", "Save water", "Use reusable bags",
@@ -131,28 +109,8 @@
             "Reduce single-use plastics"
         ];
         let availableConcepts = [...balTashchitConcepts];
-        const players = ['Player 1', 'Player 2', 'Player 3', 'Player 4', 'Player 5'];
-        let currentPlayerIndex = 0;
-        let playerScores = players.reduce((acc, player) => ({...acc, [player]: 0}), {});
 
-        function generateBingoCard(player) {
-            const playerContainer = document.createElement('div');
-            playerContainer.className = 'player-container';
-            
-            const playerName = document.createElement('div');
-            playerName.className = 'player-name';
-            playerName.textContent = player;
-            playerContainer.appendChild(playerName);
-
-            const playerScore = document.createElement('div');
-            playerScore.className = 'player-score';
-            playerScore.textContent = `Score: 0`;
-            playerContainer.appendChild(playerScore);
-
-            const bingoCard = document.createElement('div');
-            bingoCard.className = 'bingo-card';
-            bingoCard.id = `bingo-card-${player}`;
-
+        function generateBingoCard() {
             for (let i = 0; i < 25; i++) {
                 const cell = document.createElement('div');
                 cell.className = 'cell';
@@ -164,10 +122,9 @@
                     cell.textContent = availableConcepts[randomIndex];
                     availableConcepts.splice(randomIndex, 1);
                 }
+                cell.addEventListener('click', () => cell.classList.toggle('marked'));
                 bingoCard.appendChild(cell);
             }
-            playerContainer.appendChild(bingoCard);
-            gameContainer.appendChild(playerContainer);
         }
 
         function drawConcept() {
@@ -178,25 +135,22 @@
             const randomIndex = Math.floor(Math.random() * balTashchitConcepts.length);
             const drawnConcept = balTashchitConcepts[randomIndex];
             balTashchitConcepts.splice(randomIndex, 1);
-            drawConceptDisplay.textContent = `${players[currentPlayerIndex]}'s turn. Concept: ${drawnConcept}`;
+            drawConceptDisplay.textContent = `Concept: ${drawnConcept}`;
             checkForMatch(drawnConcept);
-            updateCurrentPlayer();
         }
 
         function checkForMatch(concept) {
-            players.forEach(player => {
-                const cells = document.querySelectorAll(`#bingo-card-${player} .cell`);
-                cells.forEach(cell => {
-                    if (cell.textContent === concept) {
-                        cell.classList.add('marked');
-                    }
-                });
-                checkForBingo(player);
+            const cells = document.querySelectorAll('.cell');
+            cells.forEach(cell => {
+                if (cell.textContent === concept) {
+                    cell.classList.add('marked');
+                }
             });
+            checkForBingo();
         }
 
-        function checkForBingo(player) {
-            const cells = Array.from(document.querySelectorAll(`#bingo-card-${player} .cell`));
+        function checkForBingo() {
+            const cells = Array.from(document.querySelectorAll('.cell'));
             const rows = [0, 1, 2, 3, 4].map(i => cells.slice(i*5, (i+1)*5));
             const cols = [0, 1, 2, 3, 4].map(i => cells.filter((_, index) => index % 5 === i));
             const diags = [
@@ -206,40 +160,11 @@
             const lines = [...rows, ...cols, ...diags];
             
             if (lines.some(line => line.every(cell => cell.classList.contains('marked')))) {
-                playerScores[player]++;
-                updateScore(player);
-                if (playerScores[player] >= 3) {
-                    endGame(player);
-                } else {
-                    alert(`${player} got a BINGO! Current score: ${playerScores[player]}`);
-                }
+                alert('BINGO! You won!');
             }
         }
 
-        function updateScore(player) {
-            const scoreElement = document.querySelector(`.player-container:has(#bingo-card-${player}) .player-score`);
-            scoreElement.textContent = `Score: ${playerScores[player]}`;
-        }
-
-        function updateCurrentPlayer() {
-            const playerNames = document.querySelectorAll('.player-name');
-            playerNames.forEach((name, index) => {
-                if (index === currentPlayerIndex) {
-                    name.classList.add('current-player');
-                } else {
-                    name.classList.remove('current-player');
-                }
-            });
-            currentPlayerIndex = (currentPlayerIndex + 1) % players.length;
-        }
-
-        function endGame(winner) {
-            alert(`Game Over! ${winner} wins with a score of ${playerScores[winner]}!`);
-            location.reload(); // Restart the game
-        }
-
-        players.forEach(generateBingoCard);
-        updateCurrentPlayer();
+        generateBingoCard();
     </script>
 </body>
 </html>
