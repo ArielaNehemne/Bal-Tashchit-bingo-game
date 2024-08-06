@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Bal Tashchit Bingo - 5 Players</title>
+    <title>Bal Tashchit Bingo - 5 Players Simultaneous</title>
     <style>
         body {
             font-family: Arial, sans-serif;
@@ -97,14 +97,10 @@
             box-shadow: 0 6px 12px rgba(0,0,0,0.3);
             transform: translateY(-2px);
         }
-        .current-player {
-            font-weight: bold;
-            color: #2e8b57;
-        }
     </style>
 </head>
 <body>
-    <h1>Bal Tashchit Bingo - 5 Players</h1>
+    <h1>Bal Tashchit Bingo - 5 Players Simultaneous</h1>
     <div class="bingo-container" id="bingo-container"></div>
     <div id="draw-concept">Click "Draw Concept" to start the game</div>
     <button onclick="drawConcept()">Draw Concept</button>
@@ -124,13 +120,12 @@
             "Reduce single-use plastics"
         ];
         let availableConcepts = [...balTashchitConcepts];
-        let currentPlayer = 1;
 
         function generateBingoCards() {
             for (let player = 1; player <= 5; player++) {
                 const playerCard = document.createElement('div');
                 playerCard.className = 'player-card';
-                playerCard.innerHTML = `<h3 id="player${player}">Player ${player}</h3>`;
+                playerCard.innerHTML = `<h3>Player ${player}</h3>`;
                 const bingoCard = document.createElement('div');
                 bingoCard.className = 'bingo-card';
                 bingoCard.id = `bingo-card-${player}`;
@@ -151,7 +146,6 @@
                 playerCard.appendChild(bingoCard);
                 bingoContainer.appendChild(playerCard);
             }
-            updateCurrentPlayerDisplay();
         }
 
         function toggleMark(cell) {
@@ -168,8 +162,20 @@
             const drawnConcept = availableConcepts[randomIndex];
             availableConcepts.splice(randomIndex, 1);
             drawConceptDisplay.textContent = `Concept: ${drawnConcept}`;
-            currentPlayer = (currentPlayer % 5) + 1;
-            updateCurrentPlayerDisplay();
+            highlightConcept(drawnConcept);
+        }
+
+        function highlightConcept(concept) {
+            document.querySelectorAll('.cell').forEach(cell => {
+                if (cell.textContent === concept) {
+                    cell.style.backgroundColor = '#ffff00';
+                    cell.style.color = '#000000';
+                    setTimeout(() => {
+                        cell.style.backgroundColor = '';
+                        cell.style.color = '';
+                    }, 2000);
+                }
+            });
         }
 
         function checkForBingo(cardId) {
@@ -185,19 +191,6 @@
             if (lines.some(line => line.every(cell => cell.classList.contains('marked')))) {
                 const playerNumber = cardId.split('-')[2];
                 alert(`Player ${playerNumber} has won!`);
-            }
-        }
-
-        function updateCurrentPlayerDisplay() {
-            for (let player = 1; player <= 5; player++) {
-                const playerElement = document.getElementById(`player${player}`);
-                if (player === currentPlayer) {
-                    playerElement.classList.add('current-player');
-                    playerElement.textContent = `Player ${player} (Current Turn)`;
-                } else {
-                    playerElement.classList.remove('current-player');
-                    playerElement.textContent = `Player ${player}`;
-                }
             }
         }
 
